@@ -1,4 +1,4 @@
-const {getPosts, addPost}=require("./queries");
+const {getPosts, addPost, modifyPost, deletePost, addOneLike}=require("./queries");
 
 const express=require('express');
 const cors=require('cors');
@@ -35,4 +35,42 @@ try {
     return res.status(500).json({ message: "Internal server error" });
     }
         
+});
+
+app.put("/posts/like/:id",async(req,res)=>{
+    const { id } = req.params;
+    try{
+        await addOneLike(id);
+        res.send("Like added to Post")
+    }catch({code,message}){
+        res.status(code).send(message);
+
+    }
+});
+
+app.put("/posts/:id",async(req,res)=>{
+    const { id } = req.params;
+    const {title, img, description, likes} = req.query;
+    try{
+        await modifyPost(id,title,img,description,likes);
+        res.send("Post succesfully modified")
+    }catch({code,message}){
+        res.status(code).send(message);
+
+    }
+
+});
+
+
+
+app.delete("/posts/:id",async(req,res)=>{
+    const { id } = req.params;
+    try{
+        await deletePost(id);
+        res.send("Post succesfully deleted")
+    }catch({code,message}){
+        res.status(code).send(message);
+
+    }
+
 });
